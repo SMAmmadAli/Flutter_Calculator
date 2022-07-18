@@ -18,7 +18,7 @@ class _MyAppState extends State<MyApp> {
     'C','DEL','%','/',
     '9','8','7','x',
     '6','5','4','-',
-    'C','DEL','%','/',
+    '3','2','1','/',
     '0','.','ANS','=',
 
   ];
@@ -42,16 +42,19 @@ class _MyAppState extends State<MyApp> {
                 itemBuilder: (BuildContext context, int index){
                   return MyButton(
                     buttonText: buttons[index],
-                    color: Colors.deepPurple,
-                    textcolor: Colors.white,
+                    color: isOperator(buttons[index])? Colors.deepPurple: Colors.deepPurple[50],
+                    textcolor: isOperator(buttons[index])? Colors.white: Colors.deepPurple,
                   );
                   },)
                 ),
               ),
         ],),),
-
-
-    );
-  
+    );  
   }
+   bool isOperator(String x){
+    if(x=='%' || x == '/' || x =='x' || x=='-' || x =='+' || x == '='){
+      return true;
+      }
+      return false;
+    }
 }
