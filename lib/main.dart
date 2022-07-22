@@ -1,5 +1,5 @@
 import 'dart:ui';
-
+import 'package:math_expressions/math_expressions.dart';
 import 'package:calculator/buttons.dart';
 import 'package:flutter/material.dart';
 
@@ -48,7 +48,8 @@ class _MyAppState extends State<MyApp> {
         backgroundColor: Colors.deepPurple[100],
         body: Column(
           children: [
-            Expanded(child: Container(
+            Expanded(
+                child: Container(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -56,14 +57,21 @@ class _MyAppState extends State<MyApp> {
                     height: 20,
                   ),
                   Container(
-                  padding: EdgeInsets.all(20.0), 
-                  alignment: Alignment.centerLeft,
-                  child: Text(userQuestion, style: TextStyle(fontSize: 20),)),
+                      padding: EdgeInsets.all(20.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        userQuestion,
+                        style: TextStyle(fontSize: 20),
+                      )),
                   Container(
-                     padding: EdgeInsets.all(20.0), 
-                    alignment: Alignment.centerRight,
-                    child: Text(userAnswer,style: TextStyle(fontSize: 20),))
-                ],),
+                      padding: EdgeInsets.all(20.0),
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        userAnswer,
+                        style: TextStyle(fontSize: 20),
+                      ))
+                ],
+              ),
             )),
             Expanded(
               flex: 2,
@@ -73,32 +81,51 @@ class _MyAppState extends State<MyApp> {
                       itemCount: buttons.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 4),
-                      itemBuilder: (BuildContext context, int index) {
+                      itemBuilder: (BuildContext context, int index) 
+                      // clear button                      
+                      {
                         if (index == 0) {
                           return MyButton(
-                            buttonTapped: (){
+                            buttonTapped: () {
                               setState(() {
                                 userQuestion = '';
+                                userAnswer = '';
                               });
                             },
                             buttonText: buttons[index],
                             color: Colors.green,
                             textcolor: Colors.white,
                           );
-                        } else if (index == 1) {
+                        } 
+                        // delete button
+                        else if (index == 1) {
                           return MyButton(
-                            buttonTapped: (){
+                            buttonTapped: () {
                               setState(() {
-                                userQuestion = userQuestion.substring(0,userQuestion.length-1);
+                                userQuestion = userQuestion.substring(
+                                    0, userQuestion.length - 1);
                               });
                             },
                             buttonText: buttons[index],
                             color: Colors.red,
                             textcolor: Colors.white,
                           );
+                        }
+                        // equal button
+                        else if (index == buttons.length-1) {
+                          return MyButton(
+                            buttonTapped: () {
+                              setState(() {
+                                equalButton();
+                              });
+                            },
+                            buttonText: buttons[index],
+                            color: Colors.deepPurple,
+                            textcolor: Colors.white,
+                          );
                         } else {
                           return MyButton(
-                            buttonTapped:(){
+                            buttonTapped: () {
                               setState(() {
                                 userQuestion += buttons[index];
                               });
@@ -125,5 +152,15 @@ class _MyAppState extends State<MyApp> {
       return true;
     }
     return false;
+  }
+
+  equalButton() {
+    Parser p = Parser();
+    String finalQuestion = userQuestion;
+    finalQuestion = finalQuestion.replaceAll('x','*');
+    Expression exp = p.parse(finalQuestion);
+    ContextModel cm = ContextModel();
+    double eval = exp.evaluate(EvaluationType.REAL, cm);
+    userAnswer = eval.toString();
   }
 }
